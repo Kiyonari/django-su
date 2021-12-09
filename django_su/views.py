@@ -25,6 +25,9 @@ def login_as_user(request, user_id):
     if not userobj:
         raise Http404("User not found")
 
+    if not request.user.is_superuser and userobj.is_staff:
+        return HttpResponseBadRequest("You are not allowed to login as Staff User")
+
     exit_users_pk = request.session.get("exit_users_pk", default=[])
     exit_users_pk.append(
         (request.session[SESSION_KEY], request.session[BACKEND_SESSION_KEY]))
